@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>16 Make-a-guess: Narrative Design Patterns</title>
+  <meta name="description" content="16 Make-a-guess: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/16-make-a-guess.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/16-make-a-guess.html">
+  <meta property="og:title" content="16 Make-a-guess: Narrative Design Patterns">
+  <meta property="og:description" content="16 Make-a-guess: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="16 Make-a-guess: Narrative Design Patterns">
+  <meta name="twitter:description" content="16 Make-a-guess: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Demo layout ──────────────────────────────────────────── */
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+      min-height: 540px;
+    }
+
+    .mg-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .mg-subline {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 64ch;
+    }
+
+    /* ── Chart stage ──────────────────────────────────────────── */
+    .mg-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 420px;
+      background: var(--paper-2);
+      border-radius: var(--r-md);
+      touch-action: none;
+    }
+    .mg-chart {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+    .mg-stage.is-revealed .mg-chart { cursor: default; }
+
+    /* Static chart elements */
+    .mg-gridline { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+    .mg-axis-line { stroke: var(--rule-2); stroke-width: 1; }
+    .mg-tick-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      fill: var(--ink-3);
+    }
+    .mg-axis-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      fill: var(--ink-3);
+    }
+
+    /* Anchor, the "free tip" starting point shown to the user */
+    .mg-anchor { fill: var(--cat-engagement); stroke: var(--paper); stroke-width: 2; }
+    .mg-anchor-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      fill: var(--cat-engagement);
+      font-weight: 600;
+    }
+
+    /* User's drawn line + points */
+    .mg-user-line {
+      fill: none;
+      stroke: var(--ink-2);
+      stroke-width: 2.4;
+      stroke-dasharray: 5 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .mg-user-point {
+      fill: var(--ink-2);
+      stroke: var(--paper);
+      stroke-width: 1.5;
+    }
+
+    /* The real line, hidden until reveal */
+    .mg-actual-line {
+      fill: none;
+      stroke: var(--cat-engagement);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      transition: opacity 200ms;
+    }
+    .mg-stage.is-revealed .mg-actual-line { opacity: 1; }
+    .mg-actual-point {
+      fill: var(--cat-engagement);
+      stroke: var(--paper);
+      stroke-width: 1.5;
+      opacity: 0;
+      transition: opacity 200ms;
+    }
+    .mg-stage.is-revealed .mg-actual-point { opacity: 1; }
+
+    /* Floating hint, disappears once the user starts drawing */
+    .mg-hint {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 360px;
+      text-align: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--ink-3);
+      pointer-events: none;
+      transition: opacity 300ms;
+    }
+    .mg-stage.is-drawing .mg-hint,
+    .mg-stage.is-revealed .mg-hint { opacity: 0; }
+
+    /* ── Controls ──────────────────────────────────────────────── */
+    .mg-controls {
+      display: flex;
+      gap: var(--s-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mg-progress {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+    }
+
+    /* ── Reveal summary ────────────────────────────────────────── */
+    .mg-summary {
+      display: none;
+      padding: var(--s-5);
+      background: var(--cat-engagement-soft);
+      border-left: 3px solid var(--cat-engagement);
+      border-radius: var(--r-md);
+    }
+    .mg-summary.is-visible { display: block; }
+    /* Predicted growth correctly → switch to the green/framing palette */
+    .mg-summary.is-success {
+      background: var(--cat-framing-soft);
+      border-left-color: var(--cat-framing);
+    }
+    .mg-summary-headline {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      line-height: 1.3;
+      font-weight: 500;
+      margin: 0 0 var(--s-3) 0;
+      color: var(--ink);
+    }
+    .mg-summary-headline strong { font-weight: 700; }
+    .mg-summary-sub {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink-2);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+      <!-- ── Header ──────────────────────────────────────────── -->
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 16</span>
+          <span class="tag" data-cat="framing">Framing</span>
+          <span class="tag" data-cat="engagement">Engagement</span>
+        </div>
+        <h1 class="pattern-title">Make-a-guess</h1>
+        <p class="lede">
+          Make the reader <span class="hl">draw their prediction</span>
+          before revealing the data. The gap between their line and the
+          real one is the chart.
+        </p>
+      </header>
+
+      <!-- ── Why / How ───────────────────────────────────────── -->
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            A chart shown cold gets skimmed. The same chart shown
+            <em>after</em> the reader has drawn their own prediction lands
+            differently, there's a small commitment, a flicker of
+            embarrassment, and a real "huh, I didn't know that" baked in by
+            the time the real line appears.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Start with an empty chart, axes only, no data. Give the reader
+            one known point as an anchor and ask them to draw what they
+            think happened next. On reveal, animate the real line over
+            their guess and highlight the gap. Works best when the data is
+            genuinely counter-intuitive.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Live demo ───────────────────────────────────────── -->
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <h2 class="mg-headline">Draw your line: vinyl records sold in the US, 2000&ndash;2022</h2>
+            <p class="mg-subline">
+              The orange dot is the starting value. Press and drag from there
+              to the right edge of the chart to draw what you think happened
+              over the next 22 years. Then hit reveal.
+            </p>
+
+            <div class="mg-stage" id="mg-stage">
+              <svg class="mg-chart" id="mg-chart" viewBox="0 0 720 380" preserveAspectRatio="none" aria-label="Empty chart, draw your guess for vinyl record sales 2000 to 2022"></svg>
+              <p class="mg-hint" id="mg-hint">Press and drag across the chart to draw your guess.</p>
+            </div>
+
+            <div class="mg-controls">
+              <button class="btn btn-primary" id="mg-reveal-btn" disabled>Reveal the real curve</button>
+              <button class="btn" id="mg-reset-btn">↻ Reset</button>
+              <span class="mg-progress" id="mg-progress">0 / 11 points drawn</span>
+            </div>
+
+            <div class="mg-summary" id="mg-summary" aria-live="polite"></div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Real-world example ───────────────────────────────── -->
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          The
+          <a href="https://www.nytimes.com/interactive/2015/05/28/upshot/you-draw-it-how-family-income-affects-childrens-college-chances.html" target="_blank" rel="noopener">
+            NYT's <em>You Draw It: Family Income and College Chances</em>
+          </a>
+          is the canonical version of this pattern, the reader sketches
+          their guess for how college attendance scales with family income,
+          and the real curve materialises over the top. The shape of the
+          gap, not the data itself, is the takeaway.
+        </p>
+      </aside>
+
+      <!-- ── Prev / Next ──────────────────────────────────────── -->
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="15-defamiliarisation.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Defamiliarisation</span>
+        </a>
+        <a href="17-physical-metaphor.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Physical Metaphor</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/16-make-a-guess.js"></script>
+
+</body>
+</html>

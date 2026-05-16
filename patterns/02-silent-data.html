@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05 Silent Data: Narrative Design Patterns</title>
+  <meta name="description" content="05 Silent Data: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/02-silent-data.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/02-silent-data.html">
+  <meta property="og:title" content="05 Silent Data: Narrative Design Patterns">
+  <meta property="og:description" content="05 Silent Data: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="05 Silent Data: Narrative Design Patterns">
+  <meta name="twitter:description" content="05 Silent Data: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Demo-specific styles ──────────────────────────────────── */
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    .demo-story-intro {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin: 0;
+      padding-bottom: var(--s-4);
+      border-bottom: 1px solid var(--paper-3);
+    }
+
+    /* Chart wrapper */
+    .chart-outer {
+      display: flex;
+      gap: 0;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    /* Y-axis */
+    .y-axis {
+      position: relative;
+      width: 48px;
+      height: 260px;
+      flex-shrink: 0;
+      transition: opacity 300ms;
+    }
+
+    .y-tick {
+      position: absolute;
+      right: 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--ink-3);
+      transform: translateY(50%);
+      white-space: nowrap;
+    }
+
+    .y-gridline {
+      position: absolute;
+      left: 100%;
+      width: calc(100vw);   /* overflows; clipped by chart-outer overflow:hidden */
+      height: 1px;
+      background: var(--rule);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Bars area */
+    .bars-area {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--s-2);
+      flex: 1;
+      height: 260px;
+      border-left: 1px solid var(--rule-2);
+      padding: 0 var(--s-3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      gap: var(--s-1);
+      position: relative;
+    }
+
+    .bar-val-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--ink-3);
+      transition: opacity 500ms, color 500ms;
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    .bar-wrap {
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      flex: 1;
+    }
+
+    .bar-fill {
+      width: 100%;
+      border-radius: var(--r-sm) var(--r-sm) 0 0;
+      transition: height 700ms cubic-bezier(.2,.6,.2,1),
+                  background 500ms,
+                  opacity 500ms;
+      align-self: flex-end;
+    }
+
+    .bar-fill--ghost {
+      border: 2px dashed var(--rule-2);
+      border-radius: var(--r-sm) var(--r-sm) 0 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .bar-fill--ghost::after {
+      content: '?';
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    .bar-fill--ghost:hover,
+    .bar-fill--ghost:focus {
+      border-color: var(--ink-2);
+      outline: none;
+    }
+
+    .bar-x-label {
+      font-size: 9.5px;
+      text-align: center;
+      color: var(--ink-2);
+      line-height: 1.35;
+      padding-top: var(--s-2);
+      border-top: 1px solid var(--rule);
+      width: 100%;
+    }
+
+    .bar-x-label strong {
+      font-weight: 600;
+      color: var(--ink);
+      display: block;
+    }
+
+    .bar-x-label span {
+      color: var(--ink-3);
+    }
+
+    /* Annotation */
+    .ceo-annotation {
+      background: var(--cat-argumentation);
+      color: #fff;
+      border-radius: var(--r-md);
+      padding: var(--s-3) var(--s-4);
+      font-size: var(--t-small);
+      font-family: var(--font-mono);
+      line-height: 1.5;
+      opacity: 0;
+      transition: opacity 500ms;
+      text-align: center;
+    }
+
+    /* Bottom controls row */
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      flex-wrap: wrap;
+    }
+
+    .chart-hint {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+      transition: opacity 400ms;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+
+      <!-- ── Header ──────────────────────────────────────────── -->
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 02</span>
+          <span class="tag" data-cat="argumentation">Argumentation</span>
+          <span class="tag" data-cat="emotion">Emotion</span>
+        </div>
+        <h1 class="pattern-title">Silent Data</h1>
+        <p class="lede">
+          Deliberately withhold one data point to build tension,
+          then reveal it for <span class="hl">maximum impact</span>.
+        </p>
+      </header>
+
+      <!-- ── Why / How ───────────────────────────────────────── -->
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            Absence speaks. A barely-visible bar that turns out to be 300×
+            larger reframes everything the reader assumed about the chart.
+            The reveal moment hits harder because the reader built a false
+            mental model first.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Show the chart with the silent element ghosted or missing entirely.
+            Let the reader sit with the incomplete picture. Then reveal it,
+            with an animated entrance and an annotation that spells out exactly
+            what they're seeing.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Live demo ───────────────────────────────────────── -->
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <p class="demo-story-intro">
+              US median annual salaries across five professions. One bar is
+              missing. Click it, or hit the button, when you're ready to
+              see the full picture.
+            </p>
+
+            <div class="chart-outer">
+              <div class="y-axis" id="y-axis"></div>
+              <div class="bars-area" id="bars-area"></div>
+            </div>
+
+            <div class="ceo-annotation" id="ceo-annotation" aria-hidden="true">
+              The average Fortune 500 CEO earns <strong>$14.8 million</strong> per year
+              that's <strong>329×</strong> the salary of a teacher,
+              in the same 12 months.
+            </div>
+
+            <div class="demo-controls">
+              <span class="chart-hint" id="chart-hint">← One bar is hidden</span>
+              <button class="btn btn-primary" id="reveal-btn">Reveal the 6th bar →</button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Real-world example ───────────────────────────────── -->
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          <a href="https://www.theguardian.com/us-news/ng-interactive/2015/jun/01/the-counted-police-killings-us-database"
+             target="_blank" rel="noopener">
+            The Guardian, The Counted
+          </a>
+          individual deaths were shown as dots that accumulated silently over
+          time. The weight of the number only landed when the full year was
+          finally shown, making the total feel earned rather than stated.
+        </p>
+      </aside>
+
+      <!-- ── Prev / Next ──────────────────────────────────────── -->
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="01-repetition.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Repetition</span>
+        </a>
+        <a href="03-exploration.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Exploration</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/02-silent-data.js"></script>
+
+</body>
+</html>

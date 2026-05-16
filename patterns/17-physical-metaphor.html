@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>17 Physical Metaphor: Narrative Design Patterns</title>
+  <meta name="description" content="17 Physical Metaphor: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/17-physical-metaphor.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/17-physical-metaphor.html">
+  <meta property="og:title" content="17 Physical Metaphor: Narrative Design Patterns">
+  <meta property="og:description" content="17 Physical Metaphor: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="17 Physical Metaphor: Narrative Design Patterns">
+  <meta name="twitter:description" content="17 Physical Metaphor: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+      min-height: 580px;
+    }
+    .pm-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 500;
+      line-height: 1.25;
+      margin: 0;
+    }
+    .pm-headline em { font-style: italic; }
+    .pm-subline {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 64ch;
+    }
+
+    /* ── Ladder stage ───────────────────────────────────────────── */
+    .pm-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      max-height: 520px;
+      background: var(--paper-2);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .pm-svg { width: 100%; height: 100%; display: block; }
+
+    /* Ladder rails */
+    .pm-rail { stroke: var(--ink-3); stroke-width: 2.5; stroke-linecap: round; }
+    /* Rungs */
+    .pm-rung { stroke: var(--ink-3); stroke-width: 2.5; stroke-linecap: round; }
+    .pm-rung.is-current { stroke: var(--ink); stroke-width: 3.5; }
+
+    .pm-rung-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.3px;
+      fill: var(--ink-2);
+      dominant-baseline: middle;
+    }
+    .pm-rung-label.is-current { fill: var(--ink); font-weight: 700; }
+    .pm-rung-salary {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      fill: var(--ink-2);
+      dominant-baseline: middle;
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-rung-salary.is-current { fill: var(--ink); font-weight: 700; font-size: 15px; }
+
+    /* Share-of-adults column */
+    .pm-share-header {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.6px;
+      fill: var(--ink-3);
+    }
+    .pm-share-bar {
+      fill: var(--ink-3);
+      opacity: 0.35;
+    }
+    .pm-share-bar.is-current { fill: var(--ink); opacity: 1; }
+    .pm-share-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      fill: var(--ink-3);
+      dominant-baseline: middle;
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-share-label.is-current { fill: var(--ink); font-weight: 700; }
+
+    /* The stick figure climber */
+    .pm-figure {
+      transition: transform 700ms cubic-bezier(.4, .05, .25, 1);
+    }
+    .pm-figure circle, .pm-figure line { stroke: var(--ink); stroke-width: 2.4; fill: none; stroke-linecap: round; }
+    .pm-figure circle.head { fill: var(--paper); }
+    /* Mood tinting follows the last move */
+    .pm-stage[data-mood="up"]   .pm-figure circle, .pm-stage[data-mood="up"]   .pm-figure line { stroke: var(--cat-framing); }
+    .pm-stage[data-mood="down"] .pm-figure circle, .pm-stage[data-mood="down"] .pm-figure line { stroke: var(--cat-engagement); }
+
+    /* Floating delta badge that pops above/below the figure on each move */
+    .pm-delta {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      text-anchor: middle;
+      opacity: 0;
+      transition: opacity 200ms;
+      font-variant-numeric: tabular-nums;
+    }
+    .pm-delta.is-visible { opacity: 1; transition: opacity 200ms 100ms; }
+    .pm-delta.is-up   { fill: var(--cat-framing); }
+    .pm-delta.is-down { fill: var(--cat-engagement); }
+
+    /* ── Controls ───────────────────────────────────────────────── */
+    .pm-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-3);
+    }
+    .pm-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-3);
+      padding: var(--s-4) var(--s-5);
+      background: var(--paper);
+      border: 1px solid var(--rule-2);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-family: var(--font-serif);
+      font-size: 16px;
+      color: var(--ink);
+      transition: border-color 160ms, background 160ms, transform 120ms;
+    }
+    .pm-btn:hover:not(:disabled) { border-color: var(--ink); background: var(--paper-3); }
+    .pm-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .pm-btn-arrow {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      line-height: 1;
+    }
+    .pm-btn[data-dir="up"]   .pm-btn-arrow { color: var(--cat-framing); }
+    .pm-btn[data-dir="down"] .pm-btn-arrow { color: var(--cat-engagement); }
+
+    /* ── Story card ─────────────────────────────────────────────── */
+    .pm-story {
+      padding: var(--s-4) var(--s-5);
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--ink-3);
+      border-radius: var(--r-md);
+      min-height: 76px;
+      transition: border-left-color 300ms;
+    }
+    .pm-stage[data-mood="up"]   ~ .pm-story { border-left-color: var(--cat-framing); }
+    .pm-stage[data-mood="down"] ~ .pm-story { border-left-color: var(--cat-engagement); }
+    .pm-story-headline {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 500;
+      color: var(--ink);
+      margin: 0 0 4px 0;
+    }
+    .pm-story-caption {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 60ch;
+    }
+
+    .pm-source {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.3px;
+      color: var(--ink-3);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 17</span>
+          <span class="tag" data-cat="framing">Framing</span>
+        </div>
+        <h1 class="pattern-title">Physical Metaphor</h1>
+        <p class="lede">
+          Direction carries feeling. <span class="hl">Up = good, down = bad.</span>
+          Real data, drawn as a thing that climbs or falls, gets understood
+          before the labels are even read.
+        </p>
+      </header>
+
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            We learn <em>up = good</em> before we learn to read. Salaries
+            "rise". Careers "climb". You "fall behind". When a chart matches
+            that wiring, the meaning arrives before the labels do, the shape
+            says <em>raise</em> or <em>cut</em> before the dollar figure does.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Pick the spatial direction <em>before</em> the chart type. Good
+            news climbs, bad news falls. Below, US median earnings by
+            education sit as rungs on a ladder. Climb up to feel a raise.
+            Step down to feel a cut.
+          </p>
+        </div>
+      </div>
+
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <h2 class="pm-headline" id="pm-headline">Each rung is a real median salary. <em>Move up or down.</em></h2>
+            <p class="pm-subline">
+              Eight US education levels, sorted by median pay. The bars on the
+              right show what share of US adults end up at each rung, most
+              sit in the middle. Climb up from &ldquo;high school diploma&rdquo;
+              (where 28% of adults stop) and feel the raise; step down and
+              feel the cut.
+            </p>
+
+            <div class="pm-stage" id="pm-stage">
+              <svg class="pm-svg" id="pm-svg" viewBox="0 0 720 480" preserveAspectRatio="xMidYMid meet" aria-label="A ladder of US median salaries by education level. A stick figure climbs up or steps down."></svg>
+            </div>
+
+            <div class="pm-controls">
+              <button class="pm-btn" id="pm-btn-up" data-dir="up">
+                <span class="pm-btn-arrow">↑</span>
+                <span>Climb up (get a raise)</span>
+              </button>
+              <button class="pm-btn" id="pm-btn-down" data-dir="down">
+                <span class="pm-btn-arrow">↓</span>
+                <span>Step down (take a cut)</span>
+              </button>
+            </div>
+
+            <div class="pm-story" id="pm-story">
+              <h3 class="pm-story-headline" id="pm-story-headline">You start with a high-school diploma: median pay $46,020.</h3>
+              <p class="pm-story-caption" id="pm-story-caption">Climb or descend. The chart didn't say "up is better" anywhere, but you already know it is.</p>
+            </div>
+
+            <p class="pm-source">
+              Salary &mdash; <a href="https://www.bls.gov/careeroutlook/2025/data-on-display/education-pays.htm" target="_blank" rel="noopener">BLS, &ldquo;Education pays&rdquo; 2024</a> (median weekly earnings &times; 52, full-time workers 25+).
+              Share &mdash; US Census Bureau, CPS/ACS 2023 educational attainment, adults 25+.
+              Some-college / Associate split derived from 2018 Census proportions (2023 publishes them combined).
+              Figures rounded to nearest $100 / 0.1%.
+            </p>
+
+          </div>
+        </div>
+      </section>
+
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          The FT's
+          <a href="https://www.ft.com/content/3eed7440-d8f9-11e5-a72f-1e7744c66818" target="_blank" rel="noopener">
+            <em>A drop in China's demand could drag these countries down</em>
+          </a>
+          uses the same wiring: country bubbles literally fall on the page
+          when China's imports drop. No y-axis labels needed, the falling
+          motion <em>is</em> the bad news.
+        </p>
+      </aside>
+
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="16-make-a-guess.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Make-a-guess</span>
+        </a>
+        <a href="18-call-to-action.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Call-to-action</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/17-physical-metaphor.js"></script>
+
+</body>
+</html>

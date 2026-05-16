@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Fraunces, Georgia, serif">
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+
+  <!-- Top rule -->
+  <rect x="60" y="60" width="1080" height="2" fill="#111111"/>
+
+  <!-- Title (left column, ~640px wide). Line height 84. Vertically centered around y=315. -->
+  <text x="60" y="298" font-size="72" font-weight="600" fill="#111111">
+    <tspan font-style="italic">18 ways</tspan><tspan> to make</tspan>
+  </text>
+
+  <rect x="208" y="328" width="422" height="58" fill="#FFD400"/>
+  <text x="60" y="380" font-size="72" font-weight="600" fill="#111111">
+    <tspan textLength="120" lengthAdjust="spacingAndGlyphs">data</tspan><tspan x="208" textLength="422" lengthAdjust="spacingAndGlyphs">unforgettable</tspan>
+  </text>
+
+  <!-- Footer rule -->
+  <rect x="60" y="568" width="1080" height="2" fill="#111111"/>
+
+  <!-- Dot motif: right column, vertically centered with title.
+       No clip-path; dots are culled by radius so none are cut. -->
+  <g>
+    <!-- 7x7 grid, spacing 35, centered at (970, 315). Bounding circle r=130, dot r=8. -->
+
+    <!-- Row y=210 -->
+    <circle cx="935"  cy="210" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="970"  cy="210" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1005" cy="210" r="8" fill="#111111" opacity="0.85"/>
+
+    <!-- Row y=245 -->
+    <circle cx="900"  cy="245" r="8" fill="#D49256" opacity="0.9"/>
+    <circle cx="935"  cy="245" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="970"  cy="245" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1005" cy="245" r="8" fill="#E55C5C" opacity="0.9"/>
+    <circle cx="1040" cy="245" r="8" fill="#111111" opacity="0.85"/>
+
+    <!-- Row y=280 -->
+    <circle cx="865"  cy="280" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="900"  cy="280" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="935"  cy="280" r="8" fill="#1F5E8C" opacity="0.9"/>
+    <circle cx="970"  cy="280" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1005" cy="280" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1040" cy="280" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1075" cy="280" r="8" fill="#5BAC4E" opacity="0.9"/>
+
+    <!-- Row y=315 -->
+    <circle cx="865"  cy="315" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="900"  cy="315" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="935"  cy="315" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="970"  cy="315" r="8" fill="#F2B705" opacity="0.9"/>
+    <circle cx="1005" cy="315" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1040" cy="315" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1075" cy="315" r="8" fill="#111111" opacity="0.85"/>
+
+    <!-- Row y=350 -->
+    <circle cx="865"  cy="350" r="8" fill="#E55C5C" opacity="0.9"/>
+    <circle cx="900"  cy="350" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="935"  cy="350" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="970"  cy="350" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1005" cy="350" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1040" cy="350" r="8" fill="#1F5E8C" opacity="0.9"/>
+    <circle cx="1075" cy="350" r="8" fill="#111111" opacity="0.85"/>
+
+    <!-- Row y=385 -->
+    <circle cx="900"  cy="385" r="8" fill="#5BAC4E" opacity="0.9"/>
+    <circle cx="935"  cy="385" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="970"  cy="385" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1005" cy="385" r="8" fill="#D49256" opacity="0.9"/>
+    <circle cx="1040" cy="385" r="8" fill="#111111" opacity="0.85"/>
+
+    <!-- Row y=420 -->
+    <circle cx="935"  cy="420" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="970"  cy="420" r="8" fill="#111111" opacity="0.85"/>
+    <circle cx="1005" cy="420" r="8" fill="#111111" opacity="0.85"/>
+  </g>
+  <circle cx="970" cy="315" r="130" fill="none" stroke="#E6E1D4" stroke-width="1"/>
+</svg>

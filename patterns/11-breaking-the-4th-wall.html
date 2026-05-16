@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11 Breaking the 4th Wall: Narrative Design Patterns</title>
+  <meta name="description" content="11 Breaking the 4th Wall: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/11-breaking-the-4th-wall.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/11-breaking-the-4th-wall.html">
+  <meta property="og:title" content="11 Breaking the 4th Wall: Narrative Design Patterns">
+  <meta property="og:description" content="11 Breaking the 4th Wall: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="11 Breaking the 4th Wall: Narrative Design Patterns">
+  <meta name="twitter:description" content="11 Breaking the 4th Wall: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Demo layout ──────────────────────────────────────────── */
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    .bw-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .bw-subline {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 60ch;
+    }
+
+    /* The chart stage, relatively positioned so speech bubbles can sit on top */
+    .bw-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 360px;
+    }
+
+    .bw-chart {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Default bar: neutral until it "wakes up" */
+    .bw-bar {
+      fill: var(--cat-framing);
+      opacity: 0.55;
+      transition: opacity 400ms, fill 400ms;
+    }
+    .bw-bar.is-speaking {
+      fill: var(--cat-emotion);
+      opacity: 1;
+    }
+
+    .bw-axis-line { stroke: var(--rule-2); stroke-width: 1; }
+    .bw-day-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      fill: var(--ink-3);
+    }
+    .bw-y-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      fill: var(--ink-3);
+    }
+    .bw-gridline { stroke: var(--rule); stroke-width: 1; opacity: .55; }
+
+    /* Dedicated speaker panel, the highlighted bar's avatar + text live here,
+       so we never have to position floating tooltips relative to the bars. */
+    .bw-speaker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-5) var(--s-4);
+      background: var(--paper-2);
+      border-radius: var(--r-md);
+      min-height: 200px;
+      text-align: center;
+    }
+
+    .bw-avatar {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      background: var(--paper-3);
+      display: grid;
+      place-items: center;
+      transform: scale(0.7);
+      opacity: 0;
+      transition: transform 400ms cubic-bezier(.2, 1.4, .4, 1), opacity 300ms;
+    }
+    .bw-avatar svg { width: 88%; height: 88%; display: block; }
+    .bw-avatar.is-visible {
+      transform: scale(1);
+      opacity: 1;
+      animation: bw-bob 2400ms ease-in-out 500ms infinite;
+    }
+    @keyframes bw-bob {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50%      { transform: scale(1) translateY(-4px); }
+    }
+
+    .bw-speaker-label {
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-caps);
+      font-size: 11px;
+      color: var(--ink-3);
+      margin: 0;
+      opacity: 0;
+      transition: opacity 300ms;
+    }
+    .bw-speaker-label.is-visible { opacity: 1; }
+
+    .bw-speaker-text {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      max-width: 52ch;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 400ms, transform 400ms;
+    }
+    .bw-speaker-text.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .bw-speaker-text strong { font-weight: 600; }
+
+    /* Placeholder copy shown before the first play (no avatar yet) */
+    .bw-speaker.is-idle .bw-avatar { display: none; }
+    .bw-speaker.is-idle .bw-speaker-text {
+      opacity: 1;
+      transform: none;
+      font-style: italic;
+      color: var(--ink-3);
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+    }
+
+    .bw-controls {
+      display: flex;
+      gap: var(--s-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .bw-prompt {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+      <!-- ── Header ──────────────────────────────────────────── -->
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 11</span>
+          <span class="tag" data-cat="emotion">Emotion</span>
+          <span class="tag" data-cat="framing">Framing</span>
+        </div>
+        <h1 class="pattern-title">Breaking the 4th Wall</h1>
+        <p class="lede">
+          Let the subject inside the chart turn and
+          <span class="hl">address the reader directly</span>, building
+          trust and emotional connection.
+        </p>
+      </header>
+
+      <!-- ── Why / How ───────────────────────────────────────── -->
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            A neutral chart keeps the reader at arm's length, the data is
+            something <em>over there</em>, behind glass. When a subject inside
+            the frame turns and speaks to the reader directly, the glass
+            breaks. The distance collapses. The data stops being a specimen
+            and becomes someone in the room, asking to be looked at.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Give the entity in the data a voice and aim it at the reader. A
+            bar that looks back, a country that introduces itself, a dot with
+            a speech bubble. The subject acknowledges that it's being read,
+            and addresses the person reading, first person, second person,
+            eyes on the reader.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Live demo ───────────────────────────────────────── -->
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <h2 class="bw-headline">Daily screen time, last 14 days</h2>
+            <p class="bw-subline">
+              A normal-looking bar chart. Hit play, then watch the bars
+              themselves turn around and talk to you.
+            </p>
+
+            <div class="bw-controls">
+              <button class="btn btn-primary" id="bw-play-btn">▶ Let the data speak</button>
+              <span class="bw-prompt" id="bw-prompt">3 subjects · ~24 seconds</span>
+            </div>
+
+            <div class="bw-stage" id="bw-stage">
+              <svg class="bw-chart" id="bw-chart" viewBox="0 0 720 360" preserveAspectRatio="none" aria-label="Daily screen time bar chart, with bars that address the reader"></svg>
+            </div>
+
+            <!-- Dedicated speaker panel, the highlighted bar's "voice" lives here -->
+            <div class="bw-speaker" id="bw-speaker" aria-live="polite">
+              <div class="bw-avatar" id="bw-avatar" aria-hidden="true"></div>
+              <p class="bw-speaker-label" id="bw-speaker-label"></p>
+              <p class="bw-speaker-text" id="bw-speaker-text"></p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Real-world example ───────────────────────────────── -->
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          <a href="https://monachalabi.com/" target="_blank" rel="noopener">
+            Mona Chalabi's illustrated charts
+          </a>
+          do this often: the animals, objects, and people inside the data
+          look out of the frame, make eye contact, sometimes speak. The
+          subject of the chart becomes the narrator, and the reader can no
+          longer pretend to be a neutral observer of the numbers.
+        </p>
+      </aside>
+
+      <!-- ── Prev / Next ──────────────────────────────────────── -->
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="10-rhetorical-question.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Rhetorical Question</span>
+        </a>
+        <a href="12-addressing-the-audience.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Addressing the Audience</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/11-breaking-the-4th-wall.js"></script>
+
+</body>
+</html>

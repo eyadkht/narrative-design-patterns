@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>18 Call-to-action: Narrative Design Patterns</title>
+  <meta name="description" content="18 Call-to-action: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/18-call-to-action.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/18-call-to-action.html">
+  <meta property="og:title" content="18 Call-to-action: Narrative Design Patterns">
+  <meta property="og:description" content="18 Call-to-action: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="18 Call-to-action: Narrative Design Patterns">
+  <meta name="twitter:description" content="18 Call-to-action: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+      min-height: 480px;
+    }
+
+    /* ── Stat lead: the data story that earns the CTA ───────────── */
+    .cta-lead {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-5);
+      align-items: end;
+      padding-bottom: var(--s-5);
+      border-bottom: 1px solid var(--rule);
+    }
+    @media (max-width: 640px) {
+      .cta-lead { grid-template-columns: 1fr; }
+    }
+    .cta-lead-text h3 {
+      font-family: var(--font-serif);
+      font-size: var(--t-h3, 1.375rem);
+      font-weight: 500;
+      line-height: var(--lh-tight, 1.25);
+      margin: 0 0 var(--s-3) 0;
+    }
+    .cta-lead-text h3 em { font-style: italic; }
+    .cta-lead-text p {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 50ch;
+    }
+    .cta-source {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+      margin: 0;
+      text-align: center;
+    }
+
+    /* Mini bar chart (the data lead) */
+    .cta-chart { display: flex; flex-direction: column; gap: var(--s-2); }
+    .cta-bar-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 60px;
+      align-items: center;
+      gap: var(--s-3);
+    }
+    .cta-bar-label {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-2);
+      text-align: right;
+    }
+    .cta-bar-track {
+      height: 22px;
+      background: var(--paper-3);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+    }
+    .cta-bar-fill {
+      height: 100%;
+      background: var(--ink-3);
+      border-radius: var(--r-sm);
+      transition: width var(--dur-slow, 600ms) cubic-bezier(.2,.6,.2,1);
+    }
+    .cta-bar-fill.is-bad { background: var(--cat-engagement); }
+    .cta-bar-value {
+      font-family: var(--font-serif);
+      font-size: var(--t-h3, 1.375rem);
+      font-weight: 600;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── The pitch + share CTAs ─────────────────────────────────── */
+    .cta-pitch { text-align: center; padding: var(--s-4) 0 var(--s-2); }
+    .cta-pitch h2 {
+      font-family: var(--font-serif);
+      font-size: var(--t-h2, 1.75rem);
+      font-weight: 500;
+      line-height: var(--lh-tight, 1.2);
+      margin: 0 0 var(--s-3) 0;
+    }
+    .cta-pitch p {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      max-width: 56ch;
+      margin: 0 auto;
+    }
+
+    .cta-share {
+      display: flex;
+      justify-content: center;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+    }
+    /* Make the share buttons feel like the hero CTA */
+    .cta-share .btn {
+      font-size: var(--t-body, 1rem);
+      padding: var(--s-3) var(--s-5);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+    .cta-icon {
+      flex-shrink: 0;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 18</span>
+          <span class="tag" data-cat="engagement">Engagement</span>
+        </div>
+        <h1 class="pattern-title">Call-to-action</h1>
+        <p class="lede">
+          End with <span class="hl">a clear next step</span>. Comprehension is
+          fine. Intent is better. The reader who finishes your chart should
+          know exactly what to do.
+        </p>
+      </header>
+
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            Readers absorb a great chart, nod, and close the tab. A clear
+            ask &mdash; <em>vote, donate, sign, share, try it</em> &mdash;
+            turns that nod into a small commitment. The closer the action
+            sits to the moment of understanding, the more likely the reader
+            follows through.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Pick one specific action, low-friction enough to do now. Place
+            it at the end, in language that names what happens next
+            (<em>&ldquo;register in 60 seconds&rdquo;</em>, not
+            <em>&ldquo;learn more&rdquo;</em>). Show that others have
+            already done it &mdash; social proof closes the deal.
+          </p>
+        </div>
+      </div>
+
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo &mdash; the CTA for this whole project</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <!-- Stat lead: real data point that earns the CTA -->
+            <div class="cta-lead">
+              <div class="cta-lead-text">
+                <h3>Most of the web is about to be written by machines &mdash; <em>and readers are tuning out.</em></h3>
+                <p>
+                  Reader enthusiasm for AI-generated creator content fell from
+                  <strong>60%</strong> in 2023 to just <strong>26%</strong> in
+                  2025. On YouTube, content perceived as &ldquo;AI slop&rdquo;
+                  shows roughly 70% lower retention than human-fronted videos
+                  in the same niche.
+                </p>
+              </div>
+              <div class="cta-chart" aria-label="Reader enthusiasm for AI-generated content fell from 60% in 2023 to 26% in 2025">
+                <div class="cta-bar-row">
+                  <span class="cta-bar-label">2023</span>
+                  <div class="cta-bar-track"><div class="cta-bar-fill" id="cta-bar-2023" style="width: 0%"></div></div>
+                  <span class="cta-bar-value">60%</span>
+                </div>
+                <div class="cta-bar-row">
+                  <span class="cta-bar-label">2025</span>
+                  <div class="cta-bar-track"><div class="cta-bar-fill is-bad" id="cta-bar-2025" style="width: 0%"></div></div>
+                  <span class="cta-bar-value">26%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- The pitch -->
+            <div class="cta-pitch">
+              <h2>If this resonated, <span class="hl">pass it on.</span></h2>
+              <p>
+                Eighteen patterns, one bookmark away from someone&rsquo;s next
+                chart. A share is the smallest possible action that still
+                changes who sees this.
+              </p>
+            </div>
+
+            <!-- The share CTAs -->
+            <div class="cta-share">
+              <button class="btn btn-primary" id="cta-share-copy" type="button">
+                <svg class="cta-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+                  <rect x="5" y="2" width="9" height="9" rx="1.5"/>
+                  <path d="M11 11.5 v1 a1.5 1.5 0 0 1 -1.5 1.5 h-6 a1.5 1.5 0 0 1 -1.5 -1.5 v-6 a1.5 1.5 0 0 1 1.5 -1.5 h1"/>
+                </svg>
+                <span id="cta-share-copy-label">Copy link</span>
+              </button>
+              <a class="btn btn-secondary" id="cta-share-li" target="_blank" rel="noopener">
+                <svg class="cta-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+                  <rect x="1.5" y="1.5" width="13" height="13" rx="2.5"/>
+                  <circle cx="5" cy="5" r="0.7" fill="currentColor" stroke="none"/>
+                  <line x1="5" y1="7" x2="5" y2="11.5"/>
+                  <path d="M8 11.5 V8.5 a1.5 1.5 0 0 1 3 0 V11.5"/>
+                </svg>
+                <span>Share on LinkedIn</span>
+              </a>
+            </div>
+
+            <p class="cta-source">Sources: eMarketer (2025) &middot; Retention Rabbit, YouTube benchmark (2025).</p>
+
+          </div>
+        </div>
+      </section>
+
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          The most-shared data-viz of the last decade,
+          <a href="https://www.ft.com/coronavirus-latest" target="_blank" rel="noopener">
+            FT&rsquo;s COVID-19 tracker
+          </a>,
+          ended every page with the same line: <em>share this chart, follow
+          the data</em>. Tens of thousands did. Comprehension turned into
+          spread &mdash; the CTA did most of the work.
+        </p>
+      </aside>
+
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="17-physical-metaphor.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Physical Metaphor</span>
+        </a>
+        <a href="../index.html" class="pattern-nav-link align-right">
+          <span class="mono">Back to →</span>
+          <span class="serif">All patterns</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/18-call-to-action.js"></script>
+
+</body>
+</html>

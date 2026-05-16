@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>15 Defamiliarisation: Narrative Design Patterns</title>
+  <meta name="description" content="15 Defamiliarisation: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/15-defamiliarisation.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/15-defamiliarisation.html">
+  <meta property="og:title" content="15 Defamiliarisation: Narrative Design Patterns">
+  <meta property="og:description" content="15 Defamiliarisation: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="15 Defamiliarisation: Narrative Design Patterns">
+  <meta name="twitter:description" content="15 Defamiliarisation: a live, in-browser demo of one of eighteen narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Demo layout ──────────────────────────────────────────── */
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+      min-height: 540px;
+    }
+
+    .df-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 0;
+    }
+    .df-subline {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      margin: 0;
+      max-width: 60ch;
+    }
+
+    /* ── Keyboard stage ────────────────────────────────────────── */
+    .df-stage {
+      width: 100%;
+      padding: var(--s-6) var(--s-4);
+      background: var(--paper-3);
+      border-radius: var(--r-md);
+      border: 1px solid var(--rule);
+      display: flex;
+      justify-content: center;
+    }
+
+    .df-keyboard {
+      width: 100%;
+      max-width: 520px;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .df-key {
+      cursor: default;
+      transition: transform 900ms cubic-bezier(.4, 0, .2, 1);
+    }
+    .df-key-rect {
+      stroke: var(--rule);
+      stroke-width: 0.6;
+      rx: 4;
+      transition: fill 600ms ease;
+    }
+    .df-key-text {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      pointer-events: none;
+      transition: fill 600ms ease;
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+
+    /* ── Controls + punchline ──────────────────────────────────── */
+    .df-controls {
+      display: flex;
+      gap: var(--s-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .df-status {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+    }
+
+    .df-punchline {
+      padding: var(--s-4) var(--s-5);
+      background: var(--paper-2);
+      border-radius: var(--r-md);
+      border-left: 3px solid var(--cat-framing);
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink);
+      transition: opacity 350ms;
+    }
+    .df-punchline.is-fading { opacity: 0; }
+    .df-punchline strong { font-weight: 600; }
+    .df-punchline em { color: var(--ink-2); }
+
+    .df-source {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-3);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+      <!-- ── Header ──────────────────────────────────────────── -->
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 15</span>
+          <span class="tag" data-cat="framing">Framing</span>
+        </div>
+        <h1 class="pattern-title">Defamiliarisation</h1>
+        <p class="lede">
+          Take something the reader knows by heart, and
+          <span class="hl">re-draw it strangely</span>. The familiar object
+          becomes a question.
+        </p>
+      </header>
+
+      <!-- ── Why / How ───────────────────────────────────────── -->
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            Familiar shapes invite skimming. The eye recognises the chart
+            from a thousand others and moves on. Defamiliarisation pulls
+            the rug, the same data in a strange encoding forces a second
+            look, and the assumptions that were running silently get
+            noticed.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Pick something the reader knows so well they don't really see
+            it any more, the keyboard, a clock face, the world map. Keep
+            the data the same. Change only one assumption (order,
+            orientation, projection). Don't apologise for the strangeness,
+            that's what's doing the work. Below: QWERTY, then re-sorted by
+            what English actually uses.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Live demo ───────────────────────────────────────── -->
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <h2 class="df-headline">This is the keyboard under your fingers.</h2>
+            <p class="df-subline">
+              The same 26 letters in two different layouts. Each letter is
+              coloured by how often English actually uses it, the warmer the
+              key, the more you press it. Hit the button and watch what
+              "QWERTY" was hiding.
+            </p>
+
+            <div class="df-stage" id="df-stage">
+              <svg class="df-keyboard" id="df-keyboard"
+                   viewBox="0 0 480 150"
+                   preserveAspectRatio="xMidYMid meet"
+                   aria-label="A keyboard whose layout can be re-ordered by letter frequency">
+                <!-- 26 letter keys injected by JS -->
+              </svg>
+            </div>
+
+            <div class="df-controls">
+              <button class="btn btn-primary" id="df-flip-btn">Re-order by frequency</button>
+              <span class="df-status" id="df-status">QWERTY, the layout under your fingers right now</span>
+            </div>
+
+            <div class="df-punchline" id="df-punchline"></div>
+
+            <p class="df-source">
+              Letter frequencies: Norvig's analysis of the English corpus
+              (~3.5 trillion letters). QWERTY was patented by Christopher
+              Sholes in <strong>1878</strong>, its non-ergonomic layout was
+              designed to <em>slow</em> typists down, so that adjacent
+              typewriter levers wouldn't jam.
+            </p>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Real-world example ───────────────────────────────── -->
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          The upside-down
+          <a href="https://en.wikipedia.org/wiki/Hobo%E2%80%93Dyer_projection"
+             target="_blank" rel="noopener">Hobo-Dyer world map</a> shows
+          the same coastlines, only which way is "up" has changed. The
+          keyboard demo above does the same trick on a smaller subject:
+          identical 26 letters, only the ordering removed. August Dvorak's
+          <a href="https://en.wikipedia.org/wiki/Dvorak_keyboard_layout" target="_blank" rel="noopener">
+            <em>Dvorak Simplified Keyboard</em> (1936)
+          </a>
+          is the real-world version, every QWERTY user feels its strangeness
+          on first sight, and that strangeness is what makes their everyday
+          layout suddenly visible.
+        </p>
+      </aside>
+
+      <!-- ── Prev / Next ──────────────────────────────────────── -->
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="14-convention-breaking.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Convention Breaking</span>
+        </a>
+        <a href="16-make-a-guess.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Make-a-guess</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/15-defamiliarisation.js"></script>
+
+</body>
+</html>

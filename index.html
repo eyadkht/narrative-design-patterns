@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Narrative Design Patterns</title>
+  <meta name="description" content="An interactive companion to Narrative Design Patterns for Data-Driven Storytelling by Bach et al. (2018). Every pattern with a live, in-browser demo.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/">
+  <meta property="og:title" content="Narrative Design Patterns">
+  <meta property="og:description" content="An interactive companion to Narrative Design Patterns for Data-Driven Storytelling by Bach et al. (2018). Every pattern with a live, in-browser demo.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="18 ways to make data unforgettable, an interactive companion to Narrative Design Patterns for Data-Driven Storytelling.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Narrative Design Patterns">
+  <meta name="twitter:description" content="An interactive companion to Narrative Design Patterns for Data-Driven Storytelling by Bach et al. (2018). Every pattern with a live, in-browser demo.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    /* ── Hero illustration ───────────────────────────────────────── */
+    .hero-illus {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-illus svg {
+      width: min(320px, 90%);
+      height: auto;
+    }
+
+    /* ── Chip nav wrapper ────────────────────────────────────────── */
+    .chip-nav {
+      padding: var(--s-2) 0 var(--s-9);
+    }
+    .chip-nav p {
+      font-size: var(--t-small);
+      color: var(--ink-3);
+      margin-bottom: var(--s-4);
+      letter-spacing: var(--letter-caps);
+      text-transform: uppercase;
+    }
+
+    /* ── Pattern sections wrapper ────────────────────────────────── */
+    #pattern-sections {
+      border-top: 1px solid var(--rule);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────────────── -->
+  <header>
+    <div class="site-header">
+      <span class="brand">Narrative Design Patterns</span>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <!-- ── Hero ──────────────────────────────────────────────── -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-text">
+          <h1 id="hero-title" class="display">
+            <em>18 ways</em> to make<br>data <span class="hl">unforgettable</span>
+          </h1>
+          <p class="lede" style="margin-top: var(--s-5)">
+            Narrative design patterns are reusable techniques for turning raw
+            data into stories that hold attention and stick in memory. Each
+            pattern below is explained with a live, in-browser demo you can
+            play with.
+          </p>
+        </div>
+        <div class="hero-illus" aria-hidden="true">
+          <!-- Dot-grid circle motif, coloured by category -->
+          <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="circle-clip">
+                <circle cx="160" cy="160" r="148"/>
+              </clipPath>
+            </defs>
+            <g clip-path="url(#circle-clip)" id="hero-dots"></g>
+            <circle cx="160" cy="160" r="148" fill="none" stroke="var(--rule)" stroke-width="1"/>
+          </svg>
+        </div>
+      </section>
+
+      <!-- ── Category chips ─────────────────────────────────────── -->
+      <nav class="chip-nav" aria-label="Jump to category">
+        <p>Browse by category</p>
+        <div class="chip-row" id="chip-row"></div>
+      </nav>
+
+    </div><!-- /container -->
+
+    <!-- ── Category sections (rendered by JS) ─────────────────── -->
+    <div id="pattern-sections"></div>
+
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--s-4)">
+        <p>
+          Based on
+          <a href="https://datavis2020.github.io/pdfs/Narrative_Design_Patterns__for_Data_Driven_Storytelling.pdf" target="_blank" rel="noopener">
+            <em>Narrative Design Patterns for Data-Driven Storytelling</em>
+          </a>
+          by Bach et al. (2018).
+        </p>
+        <p>Plain HTML · CSS · JS, no framework, no build step.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/patterns-data.js"></script>
+  <script src="js/index.js"></script>
+
+</body>
+</html>

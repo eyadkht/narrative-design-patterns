@@ -1,0 +1,103 @@
+/* =============================================================
+   tokens.css, design tokens for the Narrative Design Patterns
+   interactive companion. Colors sampled from the source PDF.
+   ============================================================= */
+
+:root {
+  /* --- Neutrals ------------------------------------------------ */
+  --paper:    #FFFFFF;          /* page background */
+  --paper-2:  #FAF7F0;          /* warm off-white for panels */
+  --paper-3:  #F2EEE2;          /* slightly stronger panel / card bg */
+  --ink:      #111111;          /* primary text */
+  --ink-2:    #4A4A4A;          /* secondary text */
+  --ink-3:    #8A8A85;          /* tertiary / captions */
+  --rule:     #E6E1D4;          /* hairline borders */
+  --rule-2:   #D6CFBE;          /* slightly stronger rule */
+
+  /* --- Highlight accent (the PDF's yellow marker) -------------- */
+  --highlight:        #FFD400;  /* bright saturated yellow used behind key phrases */
+  --highlight-soft:   #FFE873;  /* softer tint for large fills */
+
+  /* --- Category colors (sampled from PDF page 2) -------------- */
+  --cat-argumentation: #D49256; /* orange / tan */
+  --cat-engagement:    #E55C5C; /* coral / red */
+  --cat-flow:          #F2B705; /* deeper gold, kept distinct from --highlight */
+  --cat-emotion:       #1F5E8C; /* deep blue */
+  --cat-framing:       #5BAC4E; /* green */
+
+  /* per-category soft tints (10% mix with paper) for chip bg, card panel, etc. */
+  --cat-argumentation-soft: #F6E4D2;
+  --cat-engagement-soft:    #FAD9D9;
+  --cat-flow-soft:          #FDEEC0;
+  --cat-emotion-soft:       #D6E1EA;
+  --cat-framing-soft:       #DCEED7;
+
+  /* --- Type ---------------------------------------------------- */
+  --font-serif:  "Fraunces", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --font-sans:   -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono:   ui-monospace, "SF Mono", Menlo, Consolas, "Roboto Mono", monospace;
+
+  --t-display:  clamp(2.75rem, 6vw + 1rem, 5.5rem);  /* hero */
+  --t-h1:       clamp(2rem, 2.5vw + 1rem, 3rem);     /* section header */
+  --t-h2:       1.5rem;                              /* card title / sub-section */
+  --t-h3:       1.125rem;
+  --t-lede:     1.1875rem;                           /* hero lede paragraph */
+  --t-body:     1rem;
+  --t-small:    0.875rem;
+  --t-caption:  0.75rem;
+  --t-mono:     0.8125rem;
+
+  --lh-tight:   1.1;
+  --lh-snug:    1.25;
+  --lh-normal:  1.5;
+  --lh-loose:   1.7;
+
+  --letter-tight:  -0.015em;
+  --letter-caps:   0.08em;
+
+  /* --- Spacing scale (4px base) -------------------------------- */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  24px;
+  --s-6:  32px;
+  --s-7:  48px;
+  --s-8:  64px;
+  --s-9:  96px;
+
+  /* --- Radii --------------------------------------------------- */
+  --r-sm:    4px;
+  --r-md:    8px;
+  --r-lg:    16px;
+  --r-pill:  999px;
+
+  /* --- Shadows ------------------------------------------------- */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:  0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:  0 16px 48px rgba(0,0,0,.12);
+
+  /* --- Motion -------------------------------------------------- */
+  --dur-fast:  120ms;
+  --dur:       240ms;
+  --dur-slow:  600ms;
+  --ease:      cubic-bezier(.2,.6,.2,1);
+  --ease-in:   cubic-bezier(.4,0,1,1);
+  --ease-out:  cubic-bezier(0,0,.2,1);
+
+  /* --- Layout -------------------------------------------------- */
+  --max-w:       1200px;
+  --gutter:      var(--s-7);
+  --gutter-sm:   var(--s-5);
+
+  /* --- Focus --------------------------------------------------- */
+  --focus-ring:  0 0 0 2px var(--paper), 0 0 0 4px var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur:      0ms;
+    --dur-slow: 0ms;
+  }
+}

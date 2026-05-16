@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04 Speed-up / Slow-down: Narrative Design Patterns</title>
+  <meta name="description" content="04 Speed-up / Slow-down: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/07-speed-up-slow-down.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/07-speed-up-slow-down.html">
+  <meta property="og:title" content="04 Speed-up / Slow-down: Narrative Design Patterns">
+  <meta property="og:description" content="04 Speed-up / Slow-down: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="04 Speed-up / Slow-down: Narrative Design Patterns">
+  <meta name="twitter:description" content="04 Speed-up / Slow-down: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Demo-specific styles ──────────────────────────────────── */
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    .demo-story-intro {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin: 0;
+      padding-bottom: var(--s-4);
+      border-bottom: 1px solid var(--paper-3);
+    }
+
+    .demo-chart-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Controls */
+    .demo-controls {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: var(--s-5);
+      flex-wrap: wrap;
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .control-label {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+
+    .control-value {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-2);
+      min-width: 3ch;
+      text-align: right;
+    }
+
+    .toggle-label {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-2);
+    }
+
+    /* Status bar */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      padding-top: var(--s-2);
+      border-top: 1px solid var(--paper-3);
+    }
+
+    .status-row span {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+    }
+
+    /* Play button: fixed width so text swap doesn't jump layout */
+    #play-btn { min-width: 100px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+
+      <!-- ── Header ──────────────────────────────────────────── -->
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 07</span>
+          <span class="tag" data-cat="engagement">Engagement</span>
+          <span class="tag" data-cat="flow">Flow</span>
+        </div>
+        <h1 class="pattern-title">Speed-up / Slow-down</h1>
+        <p class="lede">
+          Control playback tempo so that dense, critical moments get
+          <span class="hl">the attention they deserve</span>.
+        </p>
+      </header>
+
+      <!-- ── Why / How ───────────────────────────────────────── -->
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            Uniform animation speed treats all moments as equal, which they
+            never are. Slowing down at volatile or complex sections is a
+            non-verbal signal: <em>pay attention here</em>. Racing through the
+            quiet parts respects the reader's time.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Pair a manual rate slider (0.25×–4×) with auto-slow logic that
+            detects dense or high-variance regions and cuts speed automatically.
+            Let the reader override, but default to the version that tells the
+            story best.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Live demo ───────────────────────────────────────── -->
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <p class="demo-story-intro">
+              A trading day, 9 AM to 4 PM. The yellow bands mark the
+              volatile opening and closing rushes. Hit Play and watch how
+              <strong>Auto-slow</strong> lingers where the action is, then
+              try toggling it off to feel the difference.
+            </p>
+
+            <div class="demo-chart-wrap">
+              <svg id="timeline-svg" viewBox="0 0 560 180"
+                   aria-label="Stock price timeline, 9 AM to 4 PM">
+                <!-- built by JS -->
+              </svg>
+            </div>
+
+            <div class="demo-controls">
+              <div class="controls-row">
+                <button class="btn btn-primary" id="play-btn">▶ Play</button>
+
+                <div class="slider-group">
+                  <span class="control-label">Speed</span>
+                  <input type="range" class="slider" id="rate-slider"
+                         min="25" max="400" step="25" value="100"
+                         aria-label="Playback speed">
+                  <span class="control-value" id="rate-value">1.00×</span>
+                </div>
+
+                <label class="toggle" for="auto-toggle">
+                  <input type="checkbox" id="auto-toggle" checked>
+                  <span class="track"></span>
+                  <span class="toggle-label">Auto-slow</span>
+                </label>
+              </div>
+
+              <div class="status-row" aria-live="polite">
+                <span id="region-label">Pre-market quiet</span>
+                <span id="speed-display">1.00× speed</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Real-world example ───────────────────────────────── -->
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          <a href="https://www.nytimes.com/interactive/2014/04/22/sports/marathons/how-the-clock-ticks-for-marathon-runners.html"
+             target="_blank" rel="noopener">
+            NYT Upshot, How the Clock Ticks for Marathon Runners
+          </a>
+          the animation slows when runners are densely packed at the start
+          and finish, and accelerates through the thin mid-race field, matching
+          narrative weight to visual density.
+        </p>
+      </aside>
+
+      <!-- ── Prev / Next ──────────────────────────────────────── -->
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="06-gradual-reveal.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Gradual Reveal</span>
+        </a>
+        <a href="08-concretise.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Concretise</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/07-speed-up-slow-down.js"></script>
+
+</body>
+</html>

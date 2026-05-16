@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>08 Concretise: Narrative Design Patterns</title>
+  <meta name="description" content="08 Concretise: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta name="author" content="Eyad Al Khayat">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="canonical" href="https://eyadkht.github.io/narrative-design-patterns/patterns/08-concretise.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eyadkht.github.io/narrative-design-patterns/patterns/08-concretise.html">
+  <meta property="og:title" content="08 Concretise: Narrative Design Patterns">
+  <meta property="og:description" content="08 Concretise: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta property="og:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Narrative Design Patterns, 18 live, in-browser demos.">
+  <meta property="og:site_name" content="Narrative Design Patterns">
+  <meta property="article:author" content="Eyad Al Khayat">
+  <meta property="article:published_time" content="2026-05-15">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="08 Concretise: Narrative Design Patterns">
+  <meta name="twitter:description" content="08 Concretise: a live, in-browser demo of one of nine narrative design patterns for data visualization.">
+  <meta name="twitter:image" content="https://eyadkht.github.io/narrative-design-patterns/assets/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /* ── Demo-specific styles ──────────────────────────────────── */
+    .demo-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-5);
+    }
+
+    .demo-story-intro {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      line-height: 1.6;
+      margin: 0;
+      padding-bottom: var(--s-4);
+      border-bottom: 1px solid var(--paper-3);
+    }
+
+    .demo-story-intro strong { color: var(--ink); font-weight: 600; }
+
+    /* Quantity display */
+    .quantity-display {
+      text-align: center;
+      padding: var(--s-2) 0;
+    }
+
+    .quantity-value {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 2.6rem;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .quantity-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+
+    .quantity-context {
+      margin-top: var(--s-2);
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      font-style: italic;
+    }
+
+    /* Slider region */
+    .slider-region {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .slider-region .slider { width: 100%; }
+
+    .slider-scale {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-3);
+    }
+
+    .preset-row {
+      display: flex;
+      justify-content: center;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      padding: 4px 10px;
+      border: 1px solid var(--rule-2);
+      border-radius: var(--r-pill);
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: border-color 200ms, background 200ms;
+    }
+
+    .preset-btn:hover { border-color: var(--ink); background: var(--paper-2); }
+
+    /* Icon grid */
+    .equiv-block {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-md);
+      padding: var(--s-5);
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-3);
+    }
+
+    .icon-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: flex-end;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .icon-cell {
+      display: inline-flex;
+      align-items: flex-end;
+    }
+
+    .icon-cell svg {
+      display: block;
+    }
+
+    /* Icon sizes vary by type so each one feels physically scaled */
+    .icon-grid[data-icon="binbag"]  .icon-cell svg { width: 24px; height: 32px; }
+    .icon-grid[data-icon="bus"]     .icon-cell svg { width: 56px; height: 34px; }
+    .icon-grid[data-icon="pool"]    .icon-cell svg { width: 80px; height: 30px; }
+    .icon-grid[data-icon="stadium"] .icon-cell svg { width: 96px; height: 54px; }
+
+    .icon-overflow {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+      align-self: center;
+      padding-left: var(--s-2);
+    }
+
+    .icon-caption {
+      font-size: var(--t-base);
+      color: var(--ink-2);
+      margin: 0;
+      text-align: center;
+    }
+
+    .icon-caption strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Alt equivalents */
+    .alt-equivs {
+      border-top: 1px solid var(--paper-3);
+      padding-top: var(--s-4);
+    }
+
+    .alt-equivs h4 {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      font-weight: 500;
+      color: var(--ink-3);
+      margin: 0 0 var(--s-2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .alt-equivs ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-3);
+    }
+
+    .alt-equivs li {
+      font-size: var(--t-small);
+      color: var(--ink-2);
+      line-height: 1.4;
+    }
+
+    .alt-equivs li strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    @media (max-width: 540px) {
+      .alt-equivs ul { grid-template-columns: 1fr; gap: var(--s-2); }
+      .quantity-value { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="site-header">
+      <a class="brand" href="../index.html">Narrative Design Patterns</a>
+      <a class="meta gh-link" href="https://github.com/Eyadkht/narrative-design-patterns" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>View on GitHub</span></a>
+    </div>
+  </header>
+
+  <main>
+    <article class="pattern-page">
+
+      <nav class="pattern-breadcrumb" aria-label="Breadcrumb"><a href="../index.html">← All patterns</a></nav>
+
+
+      <!-- ── Header ──────────────────────────────────────────── -->
+      <header class="pattern-header">
+        <div class="pattern-meta">
+          <span class="pattern-number mono">Pattern 08</span>
+          <span class="tag" data-cat="emotion">Emotion</span>
+        </div>
+        <h1 class="pattern-title">Concretise</h1>
+        <p class="lede">
+          Translate abstract quantities into familiar physical equivalents
+          so the scale <span class="hl">finally clicks</span>.
+        </p>
+      </header>
+
+      <!-- ── Why / How ───────────────────────────────────────── -->
+      <div class="pattern-body">
+        <div>
+          <h3>Why it works</h3>
+          <p>
+            "Five million tonnes" is a phrase the brain can read but not feel.
+            "Five Wembley Stadiums filled to the rim" is the same number with
+            a body attached, something the eye can measure against memory.
+            Concrete anchors make magnitude visceral.
+          </p>
+        </div>
+        <div>
+          <h3>How to use it</h3>
+          <p>
+            Pick a unit the reader already has a picture of, buses, pools,
+            football pitches, double-decker stacks. Let the unit auto-switch
+            as the magnitude grows. Show two or three alternative equivalents
+            alongside so different mental models all get an anchor.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Live demo ───────────────────────────────────────── -->
+      <section class="pattern-demo" aria-labelledby="demo-label">
+        <p class="demo-eyebrow smallcaps" id="demo-label">Live demo</p>
+        <div class="demo-frame">
+          <div class="demo-inner">
+
+            <p class="demo-story-intro">
+              The UK throws away roughly <strong>5 million tonnes</strong> of
+              plastic each year, a number too big to feel. Drag the slider
+              to dial up a quantity, from one household's bin to the country's
+              annual total, and watch it become something you can picture.
+            </p>
+
+            <div class="quantity-display" aria-live="polite">
+              <span class="quantity-value" id="qty-value">,</span>
+              <span class="quantity-label">of plastic waste</span>
+              <p class="quantity-context" id="qty-context"></p>
+            </div>
+
+            <div class="slider-region">
+              <input type="range" class="slider" id="qty-slider"
+                     min="0" max="1000" step="1" value="500"
+                     aria-label="Quantity of plastic waste in tonnes">
+              <div class="slider-scale">
+                <span>0.05 t (one bin)</span>
+                <span>5M t (UK annual)</span>
+              </div>
+              <div class="preset-row" role="group" aria-label="Preset quantities">
+                <button class="preset-btn" data-preset="0.05">1 household / week</button>
+                <button class="preset-btn" data-preset="50">A village</button>
+                <button class="preset-btn" data-preset="5000">A town</button>
+                <button class="preset-btn" data-preset="100000">A city</button>
+                <button class="preset-btn" data-preset="5000000">The whole UK</button>
+              </div>
+            </div>
+
+            <div class="equiv-block">
+              <div class="icon-grid" id="icon-grid" data-icon="bus"
+                   role="img" aria-labelledby="icon-caption"></div>
+              <p class="icon-caption" id="icon-caption">,</p>
+            </div>
+
+            <div class="alt-equivs">
+              <h4>Also equivalent to</h4>
+              <ul id="alt-list" aria-live="polite"></ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Real-world example ───────────────────────────────── -->
+      <aside class="pattern-example">
+        <h3>Real-world example</h3>
+        <p>
+          <a href="https://informationisbeautiful.net/visualizations/mountains-out-of-molehills/"
+             target="_blank" rel="noopener">
+            Information is Beautiful, Mountains Out of Molehills
+          </a>
+          every fear and risk in the news is sized against the others as a
+          physical mountain. The relative areas convert "X media mentions"
+          into a felt shape.
+        </p>
+      </aside>
+
+      <!-- ── Prev / Next ──────────────────────────────────────── -->
+      <nav class="pattern-footer" aria-label="Adjacent patterns">
+        <a href="07-speed-up-slow-down.html" class="pattern-nav-link">
+          <span class="mono">← Previous</span>
+          <span class="serif">Speed-up / Slow-down</span>
+        </a>
+        <a href="09-familiarisation.html" class="pattern-nav-link align-right">
+          <span class="mono">Next →</span>
+          <span class="serif">Familiarisation</span>
+        </a>
+      </nav>
+
+    </article>
+  </main>
+
+  <script src="../js/patterns/08-concretise.js"></script>
+
+</body>
+</html>
