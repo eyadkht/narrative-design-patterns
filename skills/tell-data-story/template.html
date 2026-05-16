@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
+  <style>
+    /* Design tokens, inlined so the output file is self-contained.
+       Sourced from the project's design system. */
+    :root {
+      --paper:    #FFFFFF;
+      --paper-2:  #FAF7F0;
+      --paper-3:  #F2EEE2;
+      --ink:      #111111;
+      --ink-2:    #4A4A4A;
+      --ink-3:    #8A8A85;
+      --rule:     #E6E1D4;
+      --rule-2:   #D6CFBE;
+
+      --highlight:      #FFD400;
+      --highlight-soft: #FFE873;
+
+      --cat-argumentation: #D49256;
+      --cat-engagement:    #E55C5C;
+      --cat-flow:          #F2B705;
+      --cat-emotion:       #1F5E8C;
+      --cat-framing:       #5BAC4E;
+
+      --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+      --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      --font-mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+      --t-display: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+      --t-h1:      clamp(1.75rem, 2vw + 1rem, 2.5rem);
+      --t-h2:      1.5rem;
+      --t-lede:    1.1875rem;
+      --t-body:    1rem;
+      --t-small:   0.875rem;
+      --t-caption: 0.75rem;
+      --t-mono:    0.8125rem;
+
+      --lh-tight: 1.1; --lh-snug: 1.25; --lh-normal: 1.5; --lh-loose: 1.7;
+      --letter-tight: -0.015em;
+      --letter-caps:  0.08em;
+
+      --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+      --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+      --r-sm: 4px; --r-md: 8px; --r-lg: 16px; --r-pill: 999px;
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.06);
+
+      --dur-fast: 120ms; --dur: 240ms; --dur-slow: 600ms;
+      --ease: cubic-bezier(.2,.6,.2,1);
+
+      --focus-ring: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :root { --dur-fast: 0ms; --dur: 0ms; --dur-slow: 0ms; }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: var(--t-body);
+      line-height: var(--lh-normal);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      letter-spacing: var(--letter-tight);
+      line-height: var(--lh-tight);
+      margin: 0;
+      color: var(--ink);
+    }
+    em { font-style: italic; }
+
+    p { margin: 0; color: var(--ink-2); line-height: var(--lh-loose); }
+
+    a {
+      color: inherit;
+      text-decoration-color: var(--rule-2);
+      text-underline-offset: 3px;
+      transition: text-decoration-color var(--dur) var(--ease);
+    }
+    a:hover { text-decoration-color: var(--ink); }
+
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: var(--r-sm);
+    }
+
+    /* Layout ----------------------------------------------------- */
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: var(--s-9) var(--s-5) var(--s-8);
+    }
+    @media (max-width: 720px) {
+      .wrap { padding: var(--s-8) var(--s-4) var(--s-7); }
+    }
+
+    /* Hero ------------------------------------------------------- */
+    .site-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--s-4);
+      padding-bottom: var(--s-6);
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: var(--s-8);
+    }
+    .brand {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: var(--letter-tight);
+    }
+    .brand em { font-style: italic; color: var(--ink); }
+    .site-header .meta {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+    }
+
+    .eyebrow {
+      font-family: var(--font-sans);
+      font-size: var(--t-caption);
+      letter-spacing: var(--letter-caps);
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: var(--s-4);
+    }
+
+    h1.display {
+      font-family: var(--font-serif);
+      font-size: var(--t-display);
+      font-weight: 400;
+      line-height: var(--lh-tight);
+      letter-spacing: var(--letter-tight);
+      margin-bottom: var(--s-5);
+    }
+    h1.display em.accent { font-style: italic; font-weight: 400; }
+
+    .lede {
+      font-family: var(--font-sans);
+      font-size: var(--t-lede);
+      line-height: var(--lh-loose);
+      color: var(--ink-2);
+      max-width: 60ch;
+    }
+
+    /* Yellow highlight, behind text only. */
+    .hl {
+      background-image: linear-gradient(
+        180deg,
+        transparent 0 6%,
+        var(--highlight) 6% 96%,
+        transparent 96% 100%
+      );
+      padding: 0 .14em;
+      -webkit-box-decoration-break: clone;
+              box-decoration-break: clone;
+      color: var(--ink);
+    }
+
+    /* Pattern sections ------------------------------------------ */
+    .pattern-demo {
+      padding: var(--s-8) 0;
+      border-top: 1px solid var(--rule);
+    }
+    .pattern-demo:first-of-type { margin-top: var(--s-8); }
+
+    .pattern-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      margin-bottom: var(--s-4);
+      flex-wrap: wrap;
+    }
+    .pattern-number {
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      letter-spacing: var(--letter-caps);
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .pattern-demo h2 {
+      font-size: clamp(1.75rem, 2vw + 1rem, 2.25rem);
+      font-weight: 500;
+      margin-bottom: var(--s-5);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-sans);
+      font-size: var(--t-caption);
+      letter-spacing: var(--letter-caps);
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--r-pill);
+      color: var(--ink);
+      background: var(--paper-3);
+      border: 1px solid var(--rule);
+    }
+    .tag::before {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--ink-3);
+      margin-right: 8px;
+    }
+    .tag[data-cat="argumentation"]::before { background: var(--cat-argumentation); }
+    .tag[data-cat="engagement"]::before    { background: var(--cat-engagement); }
+    .tag[data-cat="flow"]::before          { background: var(--cat-flow); }
+    .tag[data-cat="emotion"]::before       { background: var(--cat-emotion); }
+    .tag[data-cat="framing"]::before       { background: var(--cat-framing); }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-6);
+      margin: var(--s-5) 0 var(--s-6);
+    }
+    @media (max-width: 600px) { .meta-grid { grid-template-columns: 1fr; gap: var(--s-5); } }
+
+    .meta-grid h3 {
+      font-family: var(--font-sans);
+      font-size: var(--t-caption);
+      font-weight: 500;
+      letter-spacing: var(--letter-caps);
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: var(--s-2);
+    }
+    .meta-grid p { color: var(--ink-2); }
+
+    .demo-frame {
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-lg);
+      padding: var(--s-6);
+      margin-top: var(--s-5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Footer ----------------------------------------------------- */
+    .footer {
+      margin-top: var(--s-9);
+      padding-top: var(--s-5);
+      border-top: 1px solid var(--rule);
+      font-family: var(--font-mono);
+      font-size: var(--t-mono);
+      color: var(--ink-3);
+      display: flex;
+      justify-content: space-between;
+      gap: var(--s-4);
+      flex-wrap: wrap;
+    }
+    .footer a { color: var(--ink-2); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+
+    <header class="site-header">
+      <span class="brand"><em>Narrative</em> Design Patterns</span>
+      <span class="meta">A data story</span>
+    </header>
+
+    <section>
+      <div class="eyebrow">A data story</div>
+      <h1 class="display">{{TITLE}}</h1>
+      <p class="lede">{{TAKEAWAY}}</p>
+    </section>
+
+    <!--
+      PATTERN_BLOCKS: one <section class="pattern-demo"> per selected pattern.
+
+      Template for each block (fill in, do not leave placeholders):
+
+      <section class="pattern-demo">
+        <div class="pattern-meta">
+          <span class="pattern-number">Pattern NN</span>
+          <span class="tag" data-cat="CATEGORY_ID">Category Label</span>
+        </div>
+        <h2>Pattern Title</h2>
+
+        <div class="meta-grid">
+          <div>
+            <h3>Why this pattern</h3>
+            <p>One or two sentences from the catalog 'why', tightened.</p>
+          </div>
+          <div>
+            <h3>Applied here</h3>
+            <p>One or two sentences naming the user's actual data and the specific move.</p>
+          </div>
+        </div>
+
+        <div class="demo-frame">
+          <!-- Working demo using the user's actual data.
+               Inline SVG + JS only. No frameworks, no external assets. -->
+        </div>
+      </section>
+    -->
+    {{PATTERN_BLOCKS}}
+
+    <footer class="footer">
+      <span>Built with the <a href="https://github.com/Eyadkht/narrative-design-patterns">Narrative Design Patterns</a></span>
+      <span>v0.1</span>
+    </footer>
+
+  </main>
+</body>
+</html>
