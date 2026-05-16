@@ -18,7 +18,7 @@ If you already know the pattern you want, pass its name or number as an argument
 ### Via skills.sh
 
 ```bash
-npx skills add Eyadkht/narrative-design-patterns/skills/tell-data-story
+npx skills add eyadkht/narrative-design-patterns/skills/tell-data-story
 ```
 
 ### Manual install
